@@ -1,0 +1,52 @@
+<app-drawer title="Nuevo Beneficiario" (close)="closed.emit()">
+  <form [formGroup]="form" (ngSubmit)="onSave()" class="beneficiary-form">
+    
+    <div class="form-section">
+      <h4 class="section-title">Datos Generales</h4>
+      <app-input
+        formControlName="alias"
+        label="Alias"
+        placeholder="Ej: Proveedor Limpieza">
+      </app-input>
+      
+      <app-input
+        formControlName="name"
+        label="Nombre Completo o Razón Social"
+        placeholder="Nombre de la persona o empresa">
+      </app-input>
+      
+      <app-input
+        formControlName="email"
+        label="Correo Electrónico"
+        type="email"
+        placeholder="correo@ejemplo.com">
+      </app-input>
+    </div>
+
+    <div class="form-section">
+      <h4 class="section-title">Datos Bancarios</h4>
+      <app-input
+        formControlName="clabe"
+        label="Cuenta CLABE (18 dígitos)"
+        type="text"
+        placeholder="Ej: 012345678901234567"
+        hint="La CLABE debe tener exactamente 18 dígitos numéricos.">
+      </app-input>
+      
+      <app-input
+        formControlName="bank"
+        label="Banco"
+        placeholder="Ej: BBVA, Santander, Banamex">
+      </app-input>
+    </div>
+
+    <div class="drawer-footer">
+      <app-button variant="outline" type="button" (clicked)="closed.emit()" [disabled]="isSaving">
+        Cancelar
+      </app-button>
+      <app-button variant="primary" type="submit" [loading]="isSaving">
+        Guardar Beneficiario
+      </app-button>
+    </div>
+  </form>
+</app-drawer>

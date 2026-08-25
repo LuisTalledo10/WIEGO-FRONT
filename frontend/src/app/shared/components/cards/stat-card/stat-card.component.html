@@ -1,0 +1,26 @@
+<app-card padding="md">
+  <div class="stat-card">
+    <div class="stat-card__header">
+      <div 
+        *ngIf="iconClass" 
+        class="stat-card__icon" 
+        [style.color]="iconColor"
+        [style.background-color]="iconBg"
+      >
+        <i [class]="iconClass"></i>
+      </div>
+    </div>
+    
+    <div class="stat-card__body">
+      <span class="stat-card__title">{{ title }}</span>
+      <div class="stat-card__amount">
+        <span *ngIf="currency" class="stat-card__currency">{{ currency }}</span>
+        {{ amount | number:'1.2-2' }}
+      </div>
+    </div>
+
+    <div *ngIf="subtitle" class="stat-card__footer">
+      <span class="stat-card__subtitle">{{ subtitle }}</span>
+    </div>
+  </div>
+</app-card>

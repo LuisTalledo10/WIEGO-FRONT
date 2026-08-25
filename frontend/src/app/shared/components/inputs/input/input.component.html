@@ -1,0 +1,35 @@
+<div class="input-group" [class.input-group--error]="isInvalid" [class.input-group--disabled]="isDisabled">
+  <label *ngIf="label" class="input-label">
+    {{ label }}
+    <span *ngIf="ngControl?.control?.hasValidator" class="input-label__asterisk">*</span>
+  </label>
+  
+  <div class="input-wrapper">
+    <span *ngIf="prefixIcon" class="input-icon input-icon--prefix">
+      <!-- Icon slot, you can inject lucide icons here later -->
+      <i [class]="prefixIcon"></i>
+    </span>
+    
+    <input
+      [type]="type"
+      class="input-field"
+      [class.input-field--with-prefix]="!!prefixIcon"
+      [class.input-field--with-suffix]="!!suffixIcon"
+      [placeholder]="placeholder"
+      [value]="value"
+      [disabled]="isDisabled"
+      [readonly]="readonly"
+      (input)="handleInput($event)"
+      (blur)="handleBlur()"
+    />
+    
+    <span *ngIf="suffixIcon" class="input-icon input-icon--suffix">
+      <i [class]="suffixIcon"></i>
+    </span>
+  </div>
+
+  <div class="input-feedback">
+    <span *ngIf="isInvalid" class="input-error">{{ errorMessage }}</span>
+    <span *ngIf="hint && !isInvalid" class="input-hint">{{ hint }}</span>
+  </div>
+</div>

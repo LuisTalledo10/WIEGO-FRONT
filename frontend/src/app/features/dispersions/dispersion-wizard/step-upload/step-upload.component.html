@@ -1,0 +1,32 @@
+<div class="step-container">
+  <div class="upload-area">
+    <i class="lucide-upload-cloud upload-icon"></i>
+    <h3 class="upload-title">Sube tu archivo de pagos</h3>
+    <p class="upload-subtitle">Soporta formatos .csv, .xls, .xlsx (Máximo 10MB)</p>
+    
+    <label class="upload-btn">
+      Seleccionar Archivo
+      <input type="file" (change)="onFileChange($event)" accept=".csv, .xls, .xlsx" hidden />
+    </label>
+  </div>
+
+  <div *ngIf="selectedFile" class="file-preview">
+    <i class="lucide-file-text"></i>
+    <div class="file-info">
+      <span class="file-name">{{ selectedFile.name }}</span>
+      <span class="file-size">{{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB</span>
+    </div>
+    <button class="file-remove" (click)="selectedFile = null">
+      <i class="lucide-trash-2"></i>
+    </button>
+  </div>
+
+  <div class="step-actions">
+    <app-button 
+      variant="primary" 
+      [disabled]="!selectedFile"
+      (clicked)="onContinue()">
+      Continuar
+    </app-button>
+  </div>
+</div>

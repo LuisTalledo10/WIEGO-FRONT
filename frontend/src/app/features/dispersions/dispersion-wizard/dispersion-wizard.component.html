@@ -1,0 +1,32 @@
+<app-modal 
+  [title]="modalTitle"
+  [size]="modalSize"
+  (close)="closed.emit()">
+  
+  <div class="wizard-stepper">
+    <div class="stepper-dot" [class.stepper-dot--active]="currentStep === 'upload'">1</div>
+    <div class="stepper-line"></div>
+    <div class="stepper-dot" [class.stepper-dot--active]="currentStep === 'review'">2</div>
+    <div class="stepper-line"></div>
+    <div class="stepper-dot" [class.stepper-dot--active]="currentStep === 'confirm'">3</div>
+  </div>
+
+  <app-step-upload 
+    *ngIf="currentStep === 'upload'" 
+    (fileSelected)="handleFileSelected($event)">
+  </app-step-upload>
+
+  <app-step-review 
+    *ngIf="currentStep === 'review'"
+    [file]="selectedFile"
+    (back)="handleReviewBack()"
+    (next)="handleReviewNext()">
+  </app-step-review>
+
+  <app-step-confirm 
+    *ngIf="currentStep === 'confirm'"
+    (back)="handleConfirmBack()"
+    (confirm)="handleConfirmSuccess()">
+  </app-step-confirm>
+
+</app-modal>

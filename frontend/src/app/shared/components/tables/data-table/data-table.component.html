@@ -1,0 +1,41 @@
+<div class="data-table-container">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th *ngFor="let col of columns" 
+            [style.text-align]="col.align || 'left'"
+            [style.width]="col.width || 'auto'">
+          {{ col.header }}
+        </th>
+      </tr>
+    </thead>
+    
+    <tbody *ngIf="!isLoading && data.length > 0">
+      <tr *ngFor="let row of data" (click)="rowClicked.emit(row)">
+        <td *ngFor="let col of columns" [style.text-align]="col.align || 'left'">
+          <ng-container [ngSwitch]="col.type">
+            <span *ngSwitchCase="'currency'">{{ row[col.key] | number:'1.2-2' }}</span>
+            <span *ngSwitchCase="'date'">{{ row[col.key] | date:'dd/MM/yyyy' }}</span>
+            <span *ngSwitchDefault>{{ row[col.key] }}</span>
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+
+    <tbody *ngIf="isLoading">
+      <tr *ngFor="let i of skeletonRows">
+        <td *ngFor="let col of columns">
+          <app-skeleton type="text" height="16px" width="70%"></app-skeleton>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!isLoading && data.length === 0" class="data-table-empty">
+    <app-empty-state 
+      [title]="emptyTitle" 
+      [description]="emptyMessage"
+      iconClass="lucide-file-search">
+    </app-empty-state>
+  </div>
+</div>

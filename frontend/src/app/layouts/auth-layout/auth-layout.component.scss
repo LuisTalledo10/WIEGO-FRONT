@@ -1,0 +1,92 @@
+.auth-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-background);
+
+  &__form-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: var(--space-6);
+  }
+
+  &__content {
+    width: 100%;
+    max-width: 440px;
+    background: var(--color-surface);
+    padding: var(--space-10) var(--space-8);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+  }
+
+  &__logo-mobile {
+    display: none;
+    margin-bottom: var(--space-6);
+    text-align: center;
+    
+    img {
+      max-height: 40px;
+    }
+  }
+
+  &__visual-area {
+    display: none;
+    flex: 1;
+    background: var(--gradient-brand);
+    position: relative;
+    overflow: hidden;
+  }
+
+  &__visual-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: var(--space-16);
+    color: var(--color-text-inverse);
+  }
+
+  &__logo {
+    max-height: 80px;
+    margin-bottom: var(--space-8);
+  }
+
+  &__tagline {
+    font-size: var(--font-size-3xl);
+    font-weight: 600;
+    line-height: 1.2;
+    max-width: 500px;
+  }
+}
+
+// Tablet & Desktop
+@media (min-width: 1024px) {
+  .auth-layout {
+    &__form-area {
+      background: var(--color-surface);
+    }
+    
+    &__content {
+      box-shadow: none;
+      background: transparent;
+      padding: 0;
+    }
+
+    &__visual-area {
+      display: flex;
+    }
+  }
+}
+
+// Mobile specific tweaks
+@media (max-width: 1023px) {
+  .auth-layout {
+    &__logo-mobile {
+      display: block;
+    }
+  }
+}

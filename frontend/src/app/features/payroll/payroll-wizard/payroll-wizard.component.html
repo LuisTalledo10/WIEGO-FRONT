@@ -1,0 +1,32 @@
+<app-modal 
+  [title]="modalTitle"
+  [size]="modalSize"
+  (close)="closed.emit()">
+  
+  <div class="wizard-stepper">
+    <div class="stepper-dot" [class.stepper-dot--active]="currentStep === 'upload'">1</div>
+    <div class="stepper-line"></div>
+    <div class="stepper-dot" [class.stepper-dot--active]="currentStep === 'validate'">2</div>
+    <div class="stepper-line"></div>
+    <div class="stepper-dot" [class.stepper-dot--active]="currentStep === 'schedule'">3</div>
+  </div>
+
+  <app-step-upload-employees 
+    *ngIf="currentStep === 'upload'" 
+    (fileSelected)="handleFileSelected($event)">
+  </app-step-upload-employees>
+
+  <app-step-validate 
+    *ngIf="currentStep === 'validate'"
+    [file]="selectedFile"
+    (back)="handleValidateBack()"
+    (next)="handleValidateNext()">
+  </app-step-validate>
+
+  <app-step-schedule 
+    *ngIf="currentStep === 'schedule'"
+    (back)="handleScheduleBack()"
+    (confirm)="handleScheduleSuccess()">
+  </app-step-schedule>
+
+</app-modal>

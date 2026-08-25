@@ -1,0 +1,40 @@
+<div class="login-container">
+  <div class="login-header">
+    <h1 class="login-title">Inicia sesión</h1>
+    <p class="login-subtitle">Ingresa tus credenciales para acceder a la plataforma</p>
+  </div>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+    <app-input
+      formControlName="email"
+      label="Correo electrónico"
+      type="email"
+      placeholder="ejemplo@empresa.com"
+    ></app-input>
+
+    <app-input
+      formControlName="password"
+      label="Contraseña"
+      type="password"
+      placeholder="Ingresa tu contraseña"
+    ></app-input>
+
+    <div class="login-actions">
+      <label class="checkbox-label">
+        <input type="checkbox" formControlName="remember" />
+        Recordarme
+      </label>
+      <a routerLink="/forgot-password" class="forgot-link">¿Olvidaste tu contraseña?</a>
+    </div>
+
+    <app-button
+      type="submit"
+      variant="primary"
+      size="lg"
+      [fullWidth]="true"
+      [loading]="isLoading"
+    >
+      Iniciar sesión
+    </app-button>
+  </form>
+</div>

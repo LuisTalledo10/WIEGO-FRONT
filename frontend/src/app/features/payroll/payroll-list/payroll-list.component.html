@@ -1,0 +1,44 @@
+<div class="payroll-page">
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Gestión de Nómina</h1>
+      <p class="page-subtitle">Administra los pagos de tus empleados y mantén el control</p>
+    </div>
+    
+    <app-button variant="primary" (clicked)="openWizard()">
+      <i class="lucide-plus" style="margin-right: 8px;"></i>
+      Cargar Nómina
+    </app-button>
+  </header>
+
+  <div class="tabs-container">
+    <button 
+      class="tab-item" 
+      [class.tab-item--active]="activeTab === 'history'"
+      (click)="setTab('history')">
+      Historial de Nóminas
+    </button>
+    <button 
+      class="tab-item" 
+      [class.tab-item--active]="activeTab === 'employees'"
+      (click)="setTab('employees')">
+      Directorio de Empleados
+    </button>
+  </div>
+
+  <div class="page-content">
+    <app-data-table
+      [columns]="activeTab === 'history' ? payrollColumns : employeeColumns"
+      [data]="tableData"
+      [isLoading]="isTableLoading"
+      emptyTitle="No hay registros"
+      emptyMessage="Aún no existen registros en esta sección.">
+    </app-data-table>
+  </div>
+</div>
+
+<app-payroll-wizard 
+  *ngIf="isWizardOpen"
+  (closed)="closeWizard()"
+  (completed)="onWizardCompleted()">
+</app-payroll-wizard>

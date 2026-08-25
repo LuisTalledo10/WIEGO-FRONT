@@ -1,0 +1,142 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  &__menu-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--color-text-primary);
+    font-size: 24px;
+    cursor: pointer;
+    padding: var(--space-1);
+
+    @media (max-width: 1023px) {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  &__breadcrumb {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  &__company {
+    display: none;
+    @media (min-width: 640px) {
+      display: block;
+    }
+  }
+
+  &__action-btn {
+    position: relative;
+    background: transparent;
+    border: none;
+    color: var(--color-text-secondary);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    transition: background var(--duration-fast);
+
+    &:hover {
+      background: var(--color-surface-hover);
+      color: var(--wiego-indigo);
+    }
+  }
+
+  &__divider {
+    height: 24px;
+    width: 1px;
+    background: var(--color-border);
+  }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    cursor: pointer;
+    padding: var(--space-1);
+    border-radius: var(--radius-sm);
+    transition: background var(--duration-fast);
+
+    &:hover {
+      background: var(--color-surface-hover);
+    }
+  }
+}
+
+.company-badge {
+  background: var(--color-surface-secondary);
+  color: var(--wiego-indigo);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+.notification-dot {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-error);
+  border-radius: 50%;
+  border: 2px solid var(--color-surface);
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background: var(--gradient-brand);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.user-info {
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+  
+  @media (min-width: 768px) {
+    display: flex;
+  }
+}
+
+.user-name {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.user-icon {
+  font-size: 16px;
+  color: var(--color-text-tertiary);
+}

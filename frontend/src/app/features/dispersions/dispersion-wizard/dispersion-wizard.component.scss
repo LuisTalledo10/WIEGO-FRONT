@@ -1,0 +1,32 @@
+.wizard-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-8);
+}
+
+.stepper-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-surface-secondary);
+  color: var(--color-text-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  transition: all var(--duration-normal);
+
+  &--active {
+    background: var(--wiego-deep-purple);
+    color: var(--color-text-inverse);
+  }
+}
+
+.stepper-line {
+  height: 2px;
+  width: 64px;
+  background: var(--color-border);
+  margin: 0 var(--space-2);
+}

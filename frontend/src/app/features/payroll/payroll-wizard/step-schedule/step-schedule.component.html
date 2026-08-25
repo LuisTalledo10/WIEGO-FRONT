@@ -1,0 +1,50 @@
+<div class="step-container">
+  <div class="header">
+    <h3 class="title">Opciones de Pago</h3>
+    <p class="subtitle">Selecciona cuándo deseas que se aplique la dispersión de nómina.</p>
+  </div>
+
+  <div class="options-container">
+    <div 
+      class="option-card" 
+      [class.option-card--active]="paymentType === 'immediate'"
+      (click)="setPaymentType('immediate')">
+      <i class="lucide-zap option-icon"></i>
+      <div class="option-content">
+        <h4>Pago Inmediato</h4>
+        <p>Los fondos se dispersarán al instante.</p>
+      </div>
+      <div class="radio-circle"></div>
+    </div>
+
+    <div 
+      class="option-card" 
+      [class.option-card--active]="paymentType === 'scheduled'"
+      (click)="setPaymentType('scheduled')">
+      <i class="lucide-calendar-clock option-icon"></i>
+      <div class="option-content">
+        <h4>Pago Programado</h4>
+        <p>Elige una fecha y hora específica.</p>
+      </div>
+      <div class="radio-circle"></div>
+    </div>
+  </div>
+
+  <form [formGroup]="scheduleForm" *ngIf="paymentType === 'scheduled'" class="schedule-form">
+    <app-input
+      formControlName="scheduledDate"
+      label="Fecha y Hora de Pago"
+      type="datetime-local">
+    </app-input>
+  </form>
+
+  <div class="step-actions">
+    <app-button variant="outline" (clicked)="back.emit()" [disabled]="isProcessing">Atrás</app-button>
+    <app-button 
+      variant="primary" 
+      [loading]="isProcessing"
+      (clicked)="onConfirm()">
+      {{ paymentType === 'immediate' ? 'Pagar Ahora' : 'Programar Pago' }}
+    </app-button>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+@import 'styles/colors';
+@import 'styles/typography';
+@import 'styles/spacing';
+@import 'styles/tokens';
+@import 'styles/breakpoints';
+@import 'styles/animations';
+
+// Reset and global styles
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

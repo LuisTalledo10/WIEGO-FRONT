@@ -1,0 +1,29 @@
+<div class="step-container">
+  <div class="auth-header">
+    <i class="lucide-shield-check auth-icon"></i>
+    <h3 class="auth-title">Firma de Seguridad</h3>
+    <p class="auth-subtitle">
+      Ingresa el código OTP de 6 dígitos enviado a tu dispositivo móvil para autorizar esta dispersión.
+    </p>
+  </div>
+
+  <form [formGroup]="otpForm" (ngSubmit)="onConfirm()" class="auth-form">
+    <app-input
+      formControlName="otp"
+      label="Código de Seguridad (OTP)"
+      type="text"
+      placeholder="Ej: 123456"
+      hint="El código expirará en 5 minutos.">
+    </app-input>
+
+    <div class="step-actions">
+      <app-button variant="outline" (clicked)="back.emit()" [disabled]="isProcessing">Atrás</app-button>
+      <app-button 
+        type="submit" 
+        variant="primary" 
+        [loading]="isProcessing">
+        Autorizar Dispersión
+      </app-button>
+    </div>
+  </form>
+</div>

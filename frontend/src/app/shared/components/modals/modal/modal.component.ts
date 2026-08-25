@@ -1,0 +1,21 @@
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-modal',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './modal.component.html',
+  styleUrls: ['./modal.component.scss']
+})
+export class ModalComponent {
+  @Input() title: string = '';
+  @Input() size: 'sm' | 'md' | 'lg' | 'xl' = 'md';
+  @Output() close = new EventEmitter<void>();
+
+  onBackdropClick(event: MouseEvent) {
+    if ((event.target as HTMLElement).classList.contains('modal-backdrop')) {
+      this.close.emit();
+    }
+  }
+}

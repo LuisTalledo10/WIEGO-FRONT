@@ -1,0 +1,45 @@
+<div class="sidebar">
+  <div class="sidebar__header">
+    <img src="/assets/branding/logo-sinfondo.png" alt="Wiego" class="sidebar__logo" />
+    <button class="sidebar__close-btn" (click)="closeSidebar.emit()">
+      <i class="lucide-x"></i>
+    </button>
+  </div>
+
+  <nav class="sidebar__nav">
+    <!-- GENERAL -->
+    <div class="nav-group">
+      <span class="nav-group__title">GENERAL</span>
+      <a routerLink="/dashboard" routerLinkActive="nav-item--active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+        <i class="lucide-layout-dashboard nav-item__icon"></i>
+        <span>Dashboard</span>
+      </a>
+    </div>
+
+    <!-- PAGOS -->
+    <div class="nav-group">
+      <span class="nav-group__title">PAGOS</span>
+      <a routerLink="/dispersions" routerLinkActive="nav-item--active" class="nav-item">
+        <i class="lucide-send nav-item__icon"></i>
+        <span>Dispersión de pagos</span>
+      </a>
+      <a routerLink="/payroll" routerLinkActive="nav-item--active" class="nav-item">
+        <i class="lucide-file-spreadsheet nav-item__icon"></i>
+        <span>Cargar nómina</span>
+      </a>
+      <a routerLink="/operations" routerLinkActive="nav-item--active" class="nav-item">
+        <i class="lucide-list nav-item__icon"></i>
+        <span>Mis operaciones</span>
+      </a>
+    </div>
+
+    <!-- DIRECTORIO -->
+    <div class="nav-group">
+      <span class="nav-group__title">DIRECTORIO</span>
+      <a routerLink="/beneficiaries" routerLinkActive="nav-item--active" class="nav-item">
+        <i class="lucide-contact nav-item__icon"></i>
+        <span>Beneficiarios</span>
+      </a>
+    </div>
+  </nav>
+</div>

@@ -1,0 +1,157 @@
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family-base);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--duration-fast) ease-in-out;
+  outline: none;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px rgba(81, 64, 184, 0.3); // Wiego Indigo
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &--full-width {
+    width: 100%;
+  }
+
+  &__content {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    transition: opacity var(--duration-fast);
+
+    &--hidden {
+      opacity: 0;
+    }
+  }
+
+  &__loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .spinner {
+      animation: rotate 2s linear infinite;
+      z-index: 2;
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      
+      & .path {
+        stroke: currentColor;
+        stroke-linecap: round;
+        animation: dash 1.5s ease-in-out infinite;
+      }
+    }
+  }
+}
+
+// Variants
+.btn--primary {
+  background-color: var(--wiego-orange);
+  color: var(--color-text-inverse);
+
+  &:hover:not(:disabled) {
+    background-color: var(--wiego-orange-dark);
+  }
+  &:active:not(:disabled) {
+    background-color: var(--wiego-orange-active);
+  }
+}
+
+.btn--secondary {
+  background-color: var(--wiego-purple);
+  color: var(--color-text-inverse);
+
+  &:hover:not(:disabled) {
+    background-color: var(--wiego-deep-purple);
+  }
+}
+
+.btn--outline {
+  background-color: transparent;
+  color: var(--wiego-purple);
+  border: 1px solid var(--color-border-strong);
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-surface-hover);
+    border-color: var(--wiego-purple);
+  }
+}
+
+.btn--ghost {
+  background-color: transparent;
+  color: var(--color-text-secondary);
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-surface-hover);
+    color: var(--color-text-primary);
+  }
+}
+
+.btn--danger {
+  background-color: var(--color-error);
+  color: var(--color-text-inverse);
+
+  &:hover:not(:disabled) {
+    filter: brightness(0.9);
+  }
+}
+
+// Sizes
+.btn--sm {
+  height: 32px;
+  padding: 0 var(--space-3);
+  font-size: var(--font-size-sm);
+}
+
+.btn--md {
+  height: 40px;
+  padding: 0 var(--space-4);
+  font-size: var(--font-size-sm);
+}
+
+.btn--lg {
+  height: 48px;
+  padding: 0 var(--space-6);
+  font-size: var(--font-size-base);
+}
+
+// Spinner Animations
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}

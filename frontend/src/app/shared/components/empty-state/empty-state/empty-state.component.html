@@ -1,0 +1,18 @@
+<div class="empty-state">
+  <div class="empty-state__icon-wrapper">
+    <!-- You can use illustration SVG or icon here -->
+    <i [class]="iconClass" class="empty-state__icon"></i>
+  </div>
+  
+  <h3 class="empty-state__title">{{ title }}</h3>
+  
+  <p class="empty-state__description">
+    {{ description }}
+  </p>
+
+  <div *ngIf="actionText" class="empty-state__action">
+    <app-button variant="primary" (clicked)="action.emit()">
+      {{ actionText }}
+    </app-button>
+  </div>
+</div>

@@ -1,0 +1,35 @@
+<div class="topbar">
+  <div class="topbar__left">
+    <button class="topbar__menu-btn" (click)="toggleSidebar.emit()">
+      <i class="lucide-menu"></i>
+    </button>
+    
+    <div class="topbar__breadcrumb">
+      <!-- We can dynamically set this later -->
+      <span>Resumen Financiero</span>
+    </div>
+  </div>
+
+  <div class="topbar__right">
+    <div class="topbar__company">
+      <span class="company-badge">{{ companyName }}</span>
+    </div>
+    
+    <button class="topbar__action-btn">
+      <i class="lucide-bell"></i>
+      <span class="notification-dot"></span>
+    </button>
+
+    <div class="topbar__divider"></div>
+
+    <div class="topbar__user" (click)="logout()" title="Cerrar sesión" style="cursor: pointer;">
+      <div class="user-avatar">
+        {{ userName.charAt(0) }}
+      </div>
+      <div class="user-info">
+        <span class="user-name">{{ userName }}</span>
+        <i class="lucide-log-out user-icon" style="color: var(--color-error); margin-left: 8px;"></i>
+      </div>
+    </div>
+  </div>
+</div>

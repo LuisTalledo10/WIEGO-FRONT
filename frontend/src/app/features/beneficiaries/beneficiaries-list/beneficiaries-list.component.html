@@ -1,0 +1,29 @@
+<div class="beneficiaries-page">
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Directorio de Beneficiarios</h1>
+      <p class="page-subtitle">Gestiona las cuentas frecuentes a las que realizas pagos</p>
+    </div>
+    
+    <app-button variant="primary" (clicked)="openDrawer()">
+      <i class="lucide-plus" style="margin-right: 8px;"></i>
+      Nuevo Beneficiario
+    </app-button>
+  </header>
+
+  <div class="page-content">
+    <app-data-table
+      [columns]="columns"
+      [data]="tableData"
+      [isLoading]="isTableLoading"
+      emptyTitle="No hay beneficiarios"
+      emptyMessage="Aún no has registrado a nadie. Agrega tu primer beneficiario.">
+    </app-data-table>
+  </div>
+</div>
+
+<app-beneficiary-form 
+  *ngIf="isDrawerOpen"
+  (closed)="closeDrawer()"
+  (saved)="onBeneficiarySaved()">
+</app-beneficiary-form>

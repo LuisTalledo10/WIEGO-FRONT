@@ -1,0 +1,52 @@
+:root {
+  // Brand Colors
+  --wiego-purple: #332477;
+  --wiego-deep-purple: #21174F;
+  --wiego-indigo: #5140B8;
+
+  --wiego-orange: #FF5A1F;
+  --wiego-orange-dark: #E94A12;
+  --wiego-orange-active: #C93C0B;
+
+  --wiego-gold: #FFAA18;
+
+  // Background Colors
+  --color-background: #F7F7FA;
+  --color-surface: #FFFFFF;
+  --color-surface-secondary: #F1EFFF;
+  --color-surface-hover: #F8F7FC;
+  --color-border: #E8E6EF;
+  --color-border-strong: #D8D4E3;
+
+  // Text Colors
+  --color-text-primary: #21174F;
+  --color-text-secondary: #625E73;
+  --color-text-tertiary: #908BA0;
+  --color-text-disabled: #B8B4C2;
+  --color-text-inverse: #FFFFFF;
+
+  // Semantic Colors
+  --color-success: #16A36A;
+  --color-success-bg: #E8F7EF;
+
+  --color-warning: #E6A117;
+  --color-warning-bg: #FFF6DD;
+
+  --color-error: #D92D45;
+  --color-error-bg: #FDECEF;
+
+  --color-info: #3F6FD8;
+  --color-info-bg: #EDF3FF;
+
+  --color-processing: #5140B8;
+  --color-processing-bg: #F1EFFF;
+  
+  // Gradients
+  --gradient-brand: linear-gradient(
+    135deg,
+    #3F2C9B 0%,
+    #5140B8 35%,
+    #FF5A1F 70%,
+    #FFAA18 100%
+  );
+}

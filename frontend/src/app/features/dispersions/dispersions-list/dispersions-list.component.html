@@ -1,0 +1,29 @@
+<div class="dispersions-page">
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Dispersiones de Pagos</h1>
+      <p class="page-subtitle">Gestiona el historial y realiza nuevos envíos masivos</p>
+    </div>
+    
+    <app-button variant="primary" (clicked)="openWizard()">
+      <i class="lucide-plus" style="margin-right: 8px;"></i>
+      Nueva Dispersión
+    </app-button>
+  </header>
+
+  <div class="page-content">
+    <app-data-table
+      [columns]="tableColumns"
+      [data]="tableData"
+      [isLoading]="isTableLoading"
+      emptyTitle="No hay dispersiones"
+      emptyMessage="Aún no has realizado ninguna dispersión. Empieza creando una nueva.">
+    </app-data-table>
+  </div>
+</div>
+
+<app-dispersion-wizard 
+  *ngIf="isWizardOpen"
+  (closed)="closeWizard()"
+  (completed)="onWizardCompleted()">
+</app-dispersion-wizard>

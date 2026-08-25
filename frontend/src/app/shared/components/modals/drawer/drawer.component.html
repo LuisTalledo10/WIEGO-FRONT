@@ -1,0 +1,13 @@
+<div class="drawer-backdrop" (click)="onBackdropClick($event)">
+  <div class="drawer-content">
+    <div class="drawer-header">
+      <h2 class="drawer-title">{{ title }}</h2>
+      <button class="drawer-close-btn" (click)="close.emit()">
+        <i class="lucide-x"></i>
+      </button>
+    </div>
+    <div class="drawer-body">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

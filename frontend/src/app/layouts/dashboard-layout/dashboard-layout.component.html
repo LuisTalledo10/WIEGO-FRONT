@@ -1,0 +1,21 @@
+<div class="dashboard-layout">
+  <!-- Mobile Backdrop -->
+  <div class="dashboard-layout__backdrop" 
+       *ngIf="isSidebarOpen" 
+       (click)="toggleSidebar()">
+  </div>
+
+  <aside class="dashboard-layout__sidebar" [class.dashboard-layout__sidebar--open]="isSidebarOpen">
+    <app-sidebar (closeSidebar)="toggleSidebar()"></app-sidebar>
+  </aside>
+
+  <div class="dashboard-layout__main">
+    <header class="dashboard-layout__topbar">
+      <app-topbar (toggleSidebar)="toggleSidebar()"></app-topbar>
+    </header>
+
+    <main class="dashboard-layout__content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

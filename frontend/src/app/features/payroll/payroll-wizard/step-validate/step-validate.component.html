@@ -1,0 +1,45 @@
+<div class="step-container">
+  
+  <div class="summary-cards">
+    <app-stat-card
+      title="Nómina Total"
+      [amount]="totalAmount"
+      iconClass="lucide-coins"
+      iconColor="#5140B8"
+      iconBg="rgba(81, 64, 184, 0.1)">
+    </app-stat-card>
+    
+    <app-stat-card
+      title="Saldo Disponible"
+      [amount]="availableBalance"
+      iconClass="lucide-wallet"
+      [iconColor]="hasSufficientFunds ? '#00B171' : '#D92D45'"
+      [iconBg]="hasSufficientFunds ? 'rgba(0, 177, 113, 0.1)' : 'rgba(217, 45, 69, 0.1)'">
+    </app-stat-card>
+  </div>
+
+  <div *ngIf="!hasSufficientFunds" class="error-banner">
+    <i class="lucide-alert-triangle"></i>
+    <span>Fondos insuficientes para cubrir la nómina. Ingresa fondos antes de programarla.</span>
+  </div>
+
+  <div class="preview-section">
+    <h3 class="preview-title">Resumen de Empleados ({{ totalEmployees }} detectados)</h3>
+    <app-data-table
+      [columns]="columns"
+      [data]="previewData"
+      [isLoading]="false">
+    </app-data-table>
+  </div>
+
+  <div class="step-actions">
+    <app-button variant="outline" (clicked)="back.emit()">Atrás</app-button>
+    <app-button 
+      variant="primary" 
+      [disabled]="!hasSufficientFunds"
+      (clicked)="onContinue()">
+      Validar y Continuar
+    </app-button>
+  </div>
+
+</div>
