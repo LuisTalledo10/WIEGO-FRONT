@@ -1,0 +1,36 @@
+<div class="page">
+  <app-page-header title="Proveedores" subtitle="Proveedores y el saldo que tu empresa les debe.">
+    <app-button variant="primary" (clicked)="showForm = true">Nuevo proveedor</app-button>
+  </app-page-header>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="vendors"
+    [isLoading]="isLoading"
+    emptyTitle="Aún no tienes proveedores"
+    emptyMessage="Registra a tu primer proveedor para gestionar sus pagos."
+  >
+    <ng-template appDataTableCell="balance" let-row>
+      {{ formatCurrency(row.outstandingBalance) }}
+    </ng-template>
+
+    <ng-template appDataTableCell="actions" let-row>
+      <div class="row-actions">
+        <button class="row-actions__btn" (click)="payablesVendor = row">Cuentas por pagar</button>
+      </div>
+    </ng-template>
+  </app-data-table>
+</div>
+
+<app-vendor-form
+  *ngIf="showForm"
+  (closed)="showForm = false"
+  (saved)="onFormSaved()"
+></app-vendor-form>
+
+<app-vendor-payables
+  *ngIf="payablesVendor"
+  [vendor]="payablesVendor"
+  (closed)="payablesVendor = null"
+  (changed)="load()"
+></app-vendor-payables>

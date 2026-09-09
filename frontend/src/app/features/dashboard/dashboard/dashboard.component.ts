@@ -1,103 +1,142 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StatCardComponent } from '../../../shared/components/cards/stat-card/stat-card.component';
-import { DataTableComponent, ColumnDef } from '../../../shared/components/tables/data-table/data-table.component';
+import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
-import { EChartsOption } from 'echarts';
+import type { EChartsOption } from 'echarts';
 import * as echarts from 'echarts/core';
-import { BarChart, LineChart, PieChart } from 'echarts/charts';
-import { TitleComponent, TooltipComponent, GridComponent, LegendComponent } from 'echarts/components';
+import { BarChart, PieChart } from 'echarts/charts';
+import { TooltipComponent, GridComponent, LegendComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 
-echarts.use([BarChart, LineChart, PieChart, TitleComponent, TooltipComponent, GridComponent, LegendComponent, CanvasRenderer]);
+import { StatCardComponent } from '@shared/components/cards/stat-card/stat-card.component';
+import { DataTableComponent, ColumnDef } from '@shared/components/tables/data-table/data-table.component';
+import { DataTableCellDirective } from '@shared/components/tables/data-table/data-table-cell.directive';
+import { ButtonComponent } from '@shared/components/buttons/button/button.component';
+import { SessionService } from '@core/services/session.service';
+import { DashboardService, DashboardData } from '../data/dashboard.service';
+import { formatCurrency } from '@core/utils/format.util';
+import {
+  BATCH_STATUS_BADGE, BATCH_STATUS_LABELS, BatchStatus, BATCH_KIND_LABELS
+} from '@core/models/enums';
+import { PaymentBatchSummary } from '@core/models/payment-batch.models';
+
+echarts.use([BarChart, PieChart, TooltipComponent, GridComponent, LegendComponent, CanvasRenderer]);
+
+const ACTIVE_STATUSES: BatchStatus[] = ['DRAFT', 'PENDING_APPROVAL', 'APPROVED', 'EXPORTED'];
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, StatCardComponent, DataTableComponent, NgxEchartsDirective],
+  imports: [
+    CommonModule, StatCardComponent, DataTableComponent, DataTableCellDirective,
+    ButtonComponent, NgxEchartsDirective
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  providers: [
-    provideEchartsCore({ echarts }),
-  ]
+  providers: [provideEchartsCore({ echarts })]
 })
 export class DashboardComponent implements OnInit {
-  lineChartOption: EChartsOption = {};
-  donutChartOption: EChartsOption = {};
+  private readonly service = inject(DashboardService);
+  private readonly session = inject(SessionService);
+  private readonly router = inject(Router);
 
-  tableColumns: ColumnDef[] = [
-    { key: 'date', header: 'Fecha', type: 'date' },
-    { key: 'description', header: 'Descripción' },
-    { key: 'amount', header: 'Monto', type: 'currency', align: 'right' },
-    { key: 'status', header: 'Estado' }
+  readonly formatCurrency = formatCurrency;
+  readonly data = signal<DashboardData | null>(null);
+  isLoading = true;
+
+  readonly greetingName = computed(() => {
+    const u = this.session.user();
+    return (u?.name || u?.email || '').split(' ')[0] || '';
+  });
+
+  readonly totalPaid = computed(() => this.data()?.report.totalPaid ?? 0);
+  readonly totalPending = computed(() => this.data()?.report.totalPending ?? 0);
+  readonly activeOrders = computed(
+    () => (this.data()?.batches ?? []).filter(b => ACTIVE_STATUSES.includes(b.status)).length
+  );
+  readonly vendorDebt = computed(
+    () => (this.data()?.balances ?? []).reduce((s, v) => s + v.outstandingBalance, 0)
+  );
+
+  recentColumns: ColumnDef[] = [
+    { key: 'name', header: 'Orden' },
+    { key: 'kind', header: 'Tipo', type: 'custom' },
+    {
+      key: 'status', header: 'Estado', type: 'badge',
+      badge: (row: PaymentBatchSummary) => ({
+        status: BATCH_STATUS_BADGE[row.status], text: BATCH_STATUS_LABELS[row.status]
+      })
+    },
+    { key: 'createdAt', header: 'Creada', type: 'date' }
   ];
-  
-  tableData: any[] = [];
-  isTableLoading = true;
+
+  readonly recent = computed(() =>
+    [...(this.data()?.batches ?? [])]
+      .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+      .slice(0, 6)
+  );
+
+  statusChart: EChartsOption = {};
+  categoryChart: EChartsOption = {};
 
   ngOnInit(): void {
-    this.initCharts();
-    this.loadMockData();
+    this.isLoading = true;
+    this.service.load().pipe(finalize(() => (this.isLoading = false))).subscribe({
+      next: d => {
+        this.data.set(d);
+        this.buildCharts(d);
+      }
+    });
   }
 
-  initCharts() {
-    this.lineChartOption = {
-      tooltip: { trigger: 'axis' },
-      grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
-      xAxis: { type: 'category', boundaryGap: false, data: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'] },
-      yAxis: { type: 'value' },
-      series: [
-        {
-          name: 'Dispersiones',
-          type: 'line',
-          smooth: true,
-          lineStyle: { color: '#5140B8' },
-          areaStyle: {
-            color: {
-              type: 'linear',
-              x: 0, y: 0, x2: 0, y2: 1,
-              colorStops: [{ offset: 0, color: 'rgba(81, 64, 184, 0.5)' }, { offset: 1, color: 'rgba(81, 64, 184, 0.05)' }]
-            }
-          },
-          data: [120, 132, 101, 134, 90, 230, 210]
-        }
-      ]
-    };
+  kindLabel(kind: PaymentBatchSummary['batchKind']): string {
+    return BATCH_KIND_LABELS[kind];
+  }
 
-    this.donutChartOption = {
+  goTo(path: string): void {
+    this.router.navigate([path]);
+  }
+
+  openBatch(row: PaymentBatchSummary): void {
+    const base = row.batchKind === 'Vendors' ? '/dispersiones' : '/planillas';
+    this.router.navigate([base, row.id]);
+  }
+
+  private buildCharts(d: DashboardData): void {
+    const byStatus = new Map<BatchStatus, number>();
+    for (const b of d.batches) byStatus.set(b.status, (byStatus.get(b.status) ?? 0) + 1);
+
+    this.statusChart = {
       tooltip: { trigger: 'item' },
-      legend: { top: '5%', left: 'center' },
+      legend: { bottom: 0, left: 'center' },
       series: [
         {
-          name: 'Operaciones',
           type: 'pie',
-          radius: ['40%', '70%'],
-          avoidLabelOverlap: false,
-          itemStyle: {
-            borderRadius: 10,
-            borderColor: '#fff',
-            borderWidth: 2
-          },
-          label: { show: false, position: 'center' },
-          labelLine: { show: false },
-          data: [
-            { value: 1048, name: 'Completadas', itemStyle: { color: '#00B171' } },
-            { value: 300, name: 'En Proceso', itemStyle: { color: '#FFB800' } },
-            { value: 50, name: 'Fallidas', itemStyle: { color: '#D92D45' } }
-          ]
+          radius: ['45%', '70%'],
+          itemStyle: { borderRadius: 8, borderColor: '#fff', borderWidth: 2 },
+          label: { show: false },
+          data: [...byStatus.entries()].map(([status, value]) => ({
+            name: BATCH_STATUS_LABELS[status],
+            value
+          }))
         }
       ]
     };
-  }
 
-  loadMockData() {
-    setTimeout(() => {
-      this.tableData = [
-        { date: new Date(), description: 'Pago de Nómina Q1', amount: 15400.50, status: 'Completado' },
-        { date: new Date(Date.now() - 86400000), description: 'Proveedores CMX', amount: 3200.00, status: 'En Proceso' },
-        { date: new Date(Date.now() - 172800000), description: 'Servicios Cloud', amount: 450.75, status: 'Completado' }
-      ];
-      this.isTableLoading = false;
-    }, 1500);
+    const cats = d.report.byCategory ?? [];
+    this.categoryChart = {
+      tooltip: { trigger: 'axis' },
+      grid: { left: 8, right: 16, bottom: 8, top: 16, containLabel: true },
+      xAxis: { type: 'value' },
+      yAxis: { type: 'category', data: cats.map(c => c.category) },
+      series: [
+        {
+          type: 'bar',
+          data: cats.map(c => c.totalAmount),
+          itemStyle: { color: '#5140B8', borderRadius: [0, 6, 6, 0] }
+        }
+      ]
+    };
   }
 }

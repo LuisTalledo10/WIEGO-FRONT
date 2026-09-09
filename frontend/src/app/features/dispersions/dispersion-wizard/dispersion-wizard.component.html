@@ -1,32 +1,72 @@
-<app-modal 
-  [title]="modalTitle"
-  [size]="modalSize"
-  (close)="closed.emit()">
-  
-  <div class="wizard-stepper">
-    <div class="stepper-dot" [class.stepper-dot--active]="currentStep === 'upload'">1</div>
-    <div class="stepper-line"></div>
-    <div class="stepper-dot" [class.stepper-dot--active]="currentStep === 'review'">2</div>
-    <div class="stepper-line"></div>
-    <div class="stepper-dot" [class.stepper-dot--active]="currentStep === 'confirm'">3</div>
+<app-modal [title]="modalTitle" size="lg" (close)="closed.emit()">
+  <!-- STEP 1 -->
+  <form *ngIf="step === 1" [formGroup]="detailsForm" class="form-grid">
+    <app-input formControlName="name" label="Nombre de la dispersión" placeholder="Pago proveedores setiembre"></app-input>
+    <div class="form-actions">
+      <app-button variant="outline" type="button" (clicked)="closed.emit()">Cancelar</app-button>
+      <app-button variant="primary" type="button" [loading]="isWorking" (clicked)="next()">Continuar</app-button>
+    </div>
+  </form>
+
+  <!-- STEP 2 -->
+  <div *ngIf="step === 2" class="wizard-step">
+    <p class="wizard-hint">Agrega las facturas a pagar. Cada línea descuenta el saldo de una cuenta por pagar.</p>
+
+    <form [formGroup]="lineForm" class="line-form">
+      <div class="form-row">
+        <app-select formControlName="vendorId" label="Proveedor" [options]="vendorOptions"></app-select>
+        <app-select formControlName="payableId" label="Cuenta por pagar" [options]="payableOptions"></app-select>
+      </div>
+      <div class="form-row">
+        <app-input formControlName="amount" label="Monto" type="number" placeholder="0.00"></app-input>
+        <app-input formControlName="concept" label="Concepto"></app-input>
+      </div>
+      <div class="line-form__actions">
+        <app-button variant="outline" size="sm" type="button" (clicked)="addLine()">Agregar a la dispersión</app-button>
+      </div>
+    </form>
+
+    <ul class="lines" *ngIf="lines.length">
+      <li *ngFor="let l of lines; let i = index" class="lines__item">
+        <div class="lines__info">
+          <span class="lines__name">{{ l.vendorName }}</span>
+          <span class="lines__meta">{{ l.payableLabel }} · {{ l.concept }}</span>
+        </div>
+        <span class="lines__amount">{{ formatCurrency(l.amount, l.currencyId) }}</span>
+        <button class="lines__remove" (click)="removeLine(i)" aria-label="Quitar">✕</button>
+      </li>
+    </ul>
+
+    <div class="wizard-total">
+      <span>{{ lines.length }} facturas</span>
+      <span class="wizard-total__amount">{{ formatCurrency(total) }}</span>
+    </div>
+
+    <div class="form-actions">
+      <app-button variant="outline" type="button" (clicked)="back()">Atrás</app-button>
+      <app-button variant="primary" type="button" [loading]="isWorking" (clicked)="next()">Continuar</app-button>
+    </div>
   </div>
 
-  <app-step-upload 
-    *ngIf="currentStep === 'upload'" 
-    (fileSelected)="handleFileSelected($event)">
-  </app-step-upload>
-
-  <app-step-review 
-    *ngIf="currentStep === 'review'"
-    [file]="selectedFile"
-    (back)="handleReviewBack()"
-    (next)="handleReviewNext()">
-  </app-step-review>
-
-  <app-step-confirm 
-    *ngIf="currentStep === 'confirm'"
-    (back)="handleConfirmBack()"
-    (confirm)="handleConfirmSuccess()">
-  </app-step-confirm>
-
+  <!-- STEP 3 -->
+  <div *ngIf="step === 3" class="wizard-step">
+    <p class="wizard-hint">Revisa la dispersión antes de enviarla a aprobación.</p>
+    <ul class="lines">
+      <li *ngFor="let l of lines" class="lines__item">
+        <div class="lines__info">
+          <span class="lines__name">{{ l.vendorName }}</span>
+          <span class="lines__meta">{{ l.payableLabel }}</span>
+        </div>
+        <span class="lines__amount">{{ formatCurrency(l.amount, l.currencyId) }}</span>
+      </li>
+    </ul>
+    <div class="wizard-total">
+      <span>Total</span>
+      <span class="wizard-total__amount">{{ formatCurrency(total) }}</span>
+    </div>
+    <div class="form-actions">
+      <app-button variant="outline" type="button" (clicked)="back()">Atrás</app-button>
+      <app-button variant="primary" type="button" [loading]="isWorking" (clicked)="next()">Enviar a aprobación</app-button>
+    </div>
+  </div>
 </app-modal>

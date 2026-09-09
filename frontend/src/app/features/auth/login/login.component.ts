@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { InputComponent } from '../../../shared/components/inputs/input/input.component';
-import { ButtonComponent } from '../../../shared/components/buttons/button/button.component';
+import { InputComponent } from '@shared/components/inputs/input/input.component';
+import { ButtonComponent } from '@shared/components/buttons/button/button.component';
+import { AuthService } from '../data/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -13,28 +14,29 @@ import { ButtonComponent } from '../../../shared/components/buttons/button/butto
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-  loginForm: FormGroup;
+  private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
+  private readonly auth = inject(AuthService);
+
   isLoading = false;
 
-  constructor(private fb: FormBuilder, private router: Router) {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      remember: [false]
-    });
-  }
+  loginForm = this.fb.nonNullable.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+    remember: [false]
+  });
 
-  onSubmit() {
-    if (this.loginForm.valid) {
-      this.isLoading = true;
-      // Mock login request
-      setTimeout(() => {
-        localStorage.setItem('token', 'mock-jwt-token-for-wiego');
-        this.isLoading = false;
-        this.router.navigate(['/dashboard']);
-      }, 1000);
-    } else {
+  onSubmit(): void {
+    if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
+      return;
     }
+
+    const { email, password } = this.loginForm.getRawValue();
+    this.isLoading = true;
+    this.auth.login({ email, password }).subscribe({
+      next: () => this.router.navigate(['/dashboard']),
+      error: () => (this.isLoading = false)
+    });
   }
 }

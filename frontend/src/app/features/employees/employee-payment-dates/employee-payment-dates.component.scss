@@ -1,0 +1,59 @@
+.dates-hint {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.date-add {
+  display: flex;
+  gap: var(--space-3);
+
+  &__input {
+    flex: 1;
+    height: 40px;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-family-base);
+    outline: none;
+
+    &:focus {
+      border-color: var(--wiego-indigo);
+      box-shadow: 0 0 0 3px rgba(81, 64, 184, 0.12);
+    }
+  }
+}
+
+.date-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface-secondary);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-primary);
+
+    span { flex: 1; }
+  }
+
+  &__remove {
+    background: transparent;
+    border: none;
+    color: var(--color-text-tertiary);
+    cursor: pointer;
+    display: flex;
+    padding: 2px;
+
+    &:hover { color: var(--color-error); }
+  }
+}

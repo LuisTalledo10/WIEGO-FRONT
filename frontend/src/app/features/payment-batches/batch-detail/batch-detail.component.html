@@ -1,0 +1,95 @@
+<div class="page" *ngIf="!isLoading && batch() as b; else loadingTpl">
+  <a [routerLink]="backLink()" class="back-link">
+    <lucide-icon name="arrow-left" [size]="16"></lucide-icon>
+    <span>Volver</span>
+  </a>
+
+  <header class="detail-header">
+    <div>
+      <div class="detail-header__top">
+        <h1 class="detail-header__title">{{ b.name }}</h1>
+        <app-status-badge [status]="statusBadge[b.status]" [text]="statusLabels[b.status]"></app-status-badge>
+      </div>
+      <p class="detail-header__meta">
+        {{ kindLabels[b.batchKind] }}
+        <ng-container *ngIf="b.period"> · {{ formatPeriod(b.period) }}</ng-container>
+        · Creada el {{ b.createdAt | date:'dd/MM/yyyy' }}
+      </p>
+    </div>
+
+    <div class="detail-header__actions">
+      <app-button *ngIf="canSubmit()" variant="primary" (clicked)="ask('submit')">Enviar a aprobación</app-button>
+      <app-button *ngIf="canApprove()" variant="primary" (clicked)="ask('approve')">Aprobar</app-button>
+      <app-button *ngIf="canApprove()" variant="outline" (clicked)="ask('reject')">Rechazar</app-button>
+      <app-button *ngIf="canExport()" variant="primary" (clicked)="ask('export')">Exportar a banco</app-button>
+      <app-button *ngIf="canComplete()" variant="secondary" (clicked)="ask('complete')">Marcar como pagada</app-button>
+    </div>
+  </header>
+
+  <section class="detail-cards">
+    <div class="detail-card">
+      <span class="detail-card__label">Monto total</span>
+      <span class="detail-card__value">{{ formatCurrency(total()) }}</span>
+    </div>
+    <div class="detail-card">
+      <span class="detail-card__label">Beneficiarios</span>
+      <span class="detail-card__value">{{ b.items.length }}</span>
+    </div>
+  </section>
+
+  <div class="detail-trail" *ngIf="b.submittedAt || b.approvedAt || b.rejectedAt">
+    <span *ngIf="b.submittedAt">Enviada el {{ b.submittedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+    <span *ngIf="b.approvedAt">· Aprobada el {{ b.approvedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+    <span *ngIf="b.rejectedAt" class="detail-trail__rejected">
+      · Rechazada el {{ b.rejectedAt | date:'dd/MM/yyyy HH:mm' }} — {{ b.rejectionReason }}
+    </span>
+    <span *ngIf="b.exportedAt">· Exportada el {{ b.exportedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+    <span *ngIf="b.completedAt">· Pagada el {{ b.completedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+  </div>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="b.items"
+    emptyTitle="Sin ítems"
+    emptyMessage="Esta orden todavía no tiene pagos."
+  >
+    <ng-template appDataTableCell="amount" let-row>
+      {{ formatCurrency(row.amount, row.currency === 'USD' ? 1 : 2) }}
+    </ng-template>
+  </app-data-table>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="page">
+    <app-skeleton type="text" height="32px" width="240px"></app-skeleton>
+    <app-skeleton type="text" height="120px"></app-skeleton>
+    <app-skeleton type="text" height="320px"></app-skeleton>
+  </div>
+</ng-template>
+
+<app-modal *ngIf="pendingAction === 'reject'" title="Rechazar orden" size="sm" (close)="pendingAction = null">
+  <p class="reject-message">{{ dialogMessage }}</p>
+  <textarea
+    class="reject-textarea"
+    rows="3"
+    placeholder="Motivo del rechazo"
+    [(ngModel)]="rejectReason"
+  ></textarea>
+  <div class="reject-actions">
+    <app-button variant="outline" (clicked)="pendingAction = null" [disabled]="isActing">Cancelar</app-button>
+    <app-button variant="danger" [loading]="isActing" [disabled]="!rejectReason.trim()" (clicked)="confirm()">
+      Rechazar
+    </app-button>
+  </div>
+</app-modal>
+
+<app-confirm-dialog
+  *ngIf="pendingAction && pendingAction !== 'reject'"
+  [title]="dialogTitle"
+  [message]="dialogMessage"
+  [confirmText]="dialogConfirmText"
+  [confirmVariant]="pendingAction === 'complete' ? 'secondary' : 'primary'"
+  [loading]="isActing"
+  (confirm)="confirm()"
+  (cancel)="pendingAction = null"
+></app-confirm-dialog>

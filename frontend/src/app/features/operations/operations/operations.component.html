@@ -1,0 +1,29 @@
+<div class="page">
+  <app-page-header
+    title="Operaciones"
+    subtitle="Todas tus órdenes de pago (planillas y dispersiones) por estado."
+  ></app-page-header>
+
+  <nav class="tabs">
+    <button
+      *ngFor="let tab of tabs"
+      class="tabs__item"
+      [class.tabs__item--active]="activeTab === tab.key"
+      (click)="activeTab = tab.key"
+    >{{ tab.label }}</button>
+  </nav>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="rows"
+    [isLoading]="isLoading"
+    [clickableRows]="true"
+    (rowClicked)="open($event)"
+    emptyTitle="Sin operaciones"
+    emptyMessage="No hay órdenes en este estado."
+  >
+    <ng-template appDataTableCell="batchKind" let-row>
+      {{ kindLabel(row.batchKind) }}
+    </ng-template>
+  </app-data-table>
+</div>

@@ -1,35 +1,30 @@
 <div class="topbar">
   <div class="topbar__left">
-    <button class="topbar__menu-btn" (click)="toggleSidebar.emit()">
-      <i class="lucide-menu"></i>
+    <button class="topbar__menu-btn" (click)="toggleSidebar.emit()" aria-label="Abrir menú">
+      <lucide-icon name="menu" [size]="24"></lucide-icon>
     </button>
-    
+
     <div class="topbar__breadcrumb">
-      <!-- We can dynamically set this later -->
-      <span>Resumen Financiero</span>
+      <span>Wiego</span>
     </div>
   </div>
 
   <div class="topbar__right">
-    <div class="topbar__company">
-      <span class="company-badge">{{ companyName }}</span>
-    </div>
-    
-    <button class="topbar__action-btn">
-      <i class="lucide-bell"></i>
-      <span class="notification-dot"></span>
+    <button class="topbar__action-btn" aria-label="Notificaciones">
+      <lucide-icon name="bell" [size]="20"></lucide-icon>
     </button>
 
     <div class="topbar__divider"></div>
 
-    <div class="topbar__user" (click)="logout()" title="Cerrar sesión" style="cursor: pointer;">
-      <div class="user-avatar">
-        {{ userName.charAt(0) }}
-      </div>
+    <div class="topbar__user">
+      <div class="user-avatar">{{ initial() }}</div>
       <div class="user-info">
-        <span class="user-name">{{ userName }}</span>
-        <i class="lucide-log-out user-icon" style="color: var(--color-error); margin-left: 8px;"></i>
+        <span class="user-name">{{ displayName() }}</span>
+        <span class="user-role">{{ roleLabel() }}</span>
       </div>
+      <button class="topbar__logout" (click)="logout()" title="Cerrar sesión" aria-label="Cerrar sesión">
+        <lucide-icon name="log-out" [size]="18"></lucide-icon>
+      </button>
     </div>
   </div>
 </div>

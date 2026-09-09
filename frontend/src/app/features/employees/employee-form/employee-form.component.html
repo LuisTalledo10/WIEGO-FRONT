@@ -1,0 +1,31 @@
+<app-drawer [title]="isEdit ? 'Editar empleado' : 'Nuevo empleado'" (close)="closed.emit()">
+  <form [formGroup]="form" (ngSubmit)="save()" class="form-grid">
+    <app-input formControlName="fullName" label="Nombre completo" placeholder="Nombres y apellidos"></app-input>
+
+    <div class="form-row">
+      <app-select formControlName="documentType" label="Tipo de documento" [options]="docTypeOptions"></app-select>
+      <app-input formControlName="documentNumber" label="Número de documento" placeholder="Ej. 12345678"></app-input>
+    </div>
+
+    <p class="form-section-title">Cuenta bancaria</p>
+
+    <div class="form-row">
+      <app-select formControlName="bank" label="Banco" [options]="bankOptions"></app-select>
+      <app-select formControlName="accountType" label="Tipo de cuenta" [options]="accountTypeOptions"></app-select>
+    </div>
+
+    <div class="form-row">
+      <app-input formControlName="accountNumber" label="Número de cuenta" placeholder="Número de cuenta"></app-input>
+      <app-input formControlName="cci" label="CCI" placeholder="Cuenta interbancaria (20 dígitos)"></app-input>
+    </div>
+
+    <app-select formControlName="currencyId" label="Moneda" [options]="currencyOptions"></app-select>
+
+    <div class="form-actions">
+      <app-button variant="outline" type="button" (clicked)="closed.emit()" [disabled]="isSaving">Cancelar</app-button>
+      <app-button variant="primary" type="submit" [loading]="isSaving">
+        {{ isEdit ? 'Guardar cambios' : 'Crear empleado' }}
+      </app-button>
+    </div>
+  </form>
+</app-drawer>

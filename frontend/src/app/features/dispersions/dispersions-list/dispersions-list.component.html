@@ -1,29 +1,24 @@
-<div class="dispersions-page">
-  <header class="page-header">
-    <div>
-      <h1 class="page-title">Dispersiones de Pagos</h1>
-      <p class="page-subtitle">Gestiona el historial y realiza nuevos envíos masivos</p>
-    </div>
-    
-    <app-button variant="primary" (clicked)="openWizard()">
-      <i class="lucide-plus" style="margin-right: 8px;"></i>
-      Nueva Dispersión
-    </app-button>
-  </header>
+<div class="page">
+  <app-page-header
+    title="Dispersiones"
+    subtitle="Órdenes de pago a proveedores. Cada pago descuenta una cuenta por pagar."
+  >
+    <app-button variant="primary" (clicked)="isWizardOpen = true">Nueva dispersión</app-button>
+  </app-page-header>
 
-  <div class="page-content">
-    <app-data-table
-      [columns]="tableColumns"
-      [data]="tableData"
-      [isLoading]="isTableLoading"
-      emptyTitle="No hay dispersiones"
-      emptyMessage="Aún no has realizado ninguna dispersión. Empieza creando una nueva.">
-    </app-data-table>
-  </div>
+  <app-data-table
+    [columns]="columns"
+    [data]="batches"
+    [isLoading]="isLoading"
+    [clickableRows]="true"
+    (rowClicked)="open($event)"
+    emptyTitle="Aún no tienes dispersiones"
+    emptyMessage="Crea una dispersión para pagar a tus proveedores."
+  ></app-data-table>
 </div>
 
-<app-dispersion-wizard 
+<app-dispersion-wizard
   *ngIf="isWizardOpen"
-  (closed)="closeWizard()"
-  (completed)="onWizardCompleted()">
-</app-dispersion-wizard>
+  (closed)="isWizardOpen = false"
+  (completed)="onWizardDone($event)"
+></app-dispersion-wizard>

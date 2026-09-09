@@ -38,13 +38,6 @@
     gap: var(--space-4);
   }
 
-  &__company {
-    display: none;
-    @media (min-width: 640px) {
-      display: block;
-    }
-  }
-
   &__action-btn {
     position: relative;
     background: transparent;
@@ -76,35 +69,31 @@
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    cursor: pointer;
     padding: var(--space-1);
     border-radius: var(--radius-sm);
-    transition: background var(--duration-fast);
+  }
+
+  &__logout {
+    background: transparent;
+    border: none;
+    color: var(--color-text-tertiary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: var(--space-2);
+    border-radius: var(--radius-sm);
+    transition: all var(--duration-fast);
 
     &:hover {
-      background: var(--color-surface-hover);
+      background: var(--color-error-bg);
+      color: var(--color-error);
     }
   }
 }
 
-.company-badge {
-  background: var(--color-surface-secondary);
-  color: var(--wiego-indigo);
-  padding: 4px 12px;
-  border-radius: var(--radius-full);
+.user-role {
   font-size: var(--font-size-xs);
-  font-weight: 600;
-}
-
-.notification-dot {
-  position: absolute;
-  top: 6px;
-  right: 8px;
-  width: 8px;
-  height: 8px;
-  background-color: var(--color-error);
-  border-radius: 50%;
-  border: 2px solid var(--color-surface);
+  color: var(--color-text-tertiary);
 }
 
 .user-avatar {
@@ -122,9 +111,9 @@
 
 .user-info {
   display: none;
-  align-items: center;
-  gap: var(--space-2);
-  
+  flex-direction: column;
+  line-height: 1.2;
+
   @media (min-width: 768px) {
     display: flex;
   }
@@ -134,9 +123,4 @@
   font-size: var(--font-size-sm);
   font-weight: 500;
   color: var(--color-text-primary);
-}
-
-.user-icon {
-  font-size: 16px;
-  color: var(--color-text-tertiary);
 }

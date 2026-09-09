@@ -1,55 +1,58 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataTableComponent, ColumnDef } from '../../../shared/components/tables/data-table/data-table.component';
-import { ButtonComponent } from '../../../shared/components/buttons/button/button.component';
+import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
+import { ButtonComponent } from '@shared/components/buttons/button/button.component';
+import { DataTableComponent, ColumnDef } from '@shared/components/tables/data-table/data-table.component';
+import { PaymentBatchesService } from '@core/data/payment-batches.service';
+import { PaymentBatchSummary } from '@core/models/payment-batch.models';
+import { BATCH_STATUS_BADGE, BATCH_STATUS_LABELS } from '@core/models/enums';
 import { DispersionWizardComponent } from '../dispersion-wizard/dispersion-wizard.component';
 
 @Component({
   selector: 'app-dispersions-list',
   standalone: true,
-  imports: [CommonModule, DataTableComponent, ButtonComponent, DispersionWizardComponent],
-  templateUrl: './dispersions-list.component.html',
-  styleUrls: ['./dispersions-list.component.scss']
+  imports: [CommonModule, PageHeaderComponent, ButtonComponent, DataTableComponent, DispersionWizardComponent],
+  templateUrl: './dispersions-list.component.html'
 })
 export class DispersionsListComponent implements OnInit {
-  isWizardOpen = false;
-  isTableLoading = true;
-  tableData: any[] = [];
+  private readonly service = inject(PaymentBatchesService);
+  private readonly router = inject(Router);
 
-  tableColumns: ColumnDef[] = [
-    { key: 'id', header: 'ID' },
-    { key: 'date', header: 'Fecha', type: 'date' },
-    { key: 'description', header: 'Descripción' },
-    { key: 'records', header: 'Registros', align: 'center' },
-    { key: 'amount', header: 'Monto Total', type: 'currency', align: 'right' },
-    { key: 'status', header: 'Estado' }
+  batches: PaymentBatchSummary[] = [];
+  isLoading = true;
+  isWizardOpen = false;
+
+  columns: ColumnDef[] = [
+    { key: 'name', header: 'Dispersión' },
+    {
+      key: 'status', header: 'Estado', type: 'badge',
+      badge: (row: PaymentBatchSummary) => ({
+        status: BATCH_STATUS_BADGE[row.status], text: BATCH_STATUS_LABELS[row.status]
+      })
+    },
+    { key: 'createdAt', header: 'Creada', type: 'date' }
   ];
 
-  ngOnInit() {
-    this.loadData();
+  ngOnInit(): void {
+    this.load();
   }
 
-  loadData() {
-    setTimeout(() => {
-      this.tableData = [
-        { id: 'DSP-1023', date: new Date(), description: 'Pago Quincena 1', records: 154, amount: 245000.00, status: 'Completado' },
-        { id: 'DSP-1022', date: new Date(Date.now() - 86400000*5), description: 'Proveedores Marzo', records: 12, amount: 15400.50, status: 'Completado' }
-      ];
-      this.isTableLoading = false;
-    }, 1000);
+  load(): void {
+    this.isLoading = true;
+    this.service
+      .list('Vendors')
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({ next: rows => (this.batches = rows) });
   }
 
-  openWizard() {
-    this.isWizardOpen = true;
+  open(row: PaymentBatchSummary): void {
+    this.router.navigate(['/dispersiones', row.id]);
   }
 
-  closeWizard() {
+  onWizardDone(batchId: string): void {
     this.isWizardOpen = false;
-  }
-
-  onWizardCompleted() {
-    this.closeWizard();
-    this.isTableLoading = true;
-    this.loadData();
+    this.router.navigate(['/dispersiones', batchId]);
   }
 }

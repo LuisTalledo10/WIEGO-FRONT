@@ -1,52 +1,73 @@
 <div class="dashboard-container">
-  <!-- KPIs Row -->
+  <header class="dashboard-greeting">
+    <h1 class="dashboard-greeting__title">Hola{{ greetingName() ? ', ' + greetingName() : '' }}</h1>
+    <p class="dashboard-greeting__subtitle">Resumen financiero de tu empresa.</p>
+  </header>
+
   <div class="dashboard-kpis">
     <app-stat-card
-      title="Saldo Disponible"
-      amount="145,250.00"
-      iconClass="lucide-wallet"
-      iconColor="#5140B8"
-      iconBg="rgba(81, 64, 184, 0.1)">
-    </app-stat-card>
-    
-    <app-stat-card
-      title="Dispersiones del Mes"
-      amount="45,900.00"
-      iconClass="lucide-send"
-      iconColor="#FF8500"
-      iconBg="rgba(255, 133, 0, 0.1)">
-    </app-stat-card>
-
-    <app-stat-card
-      title="Operaciones Pendientes"
-      amount="12"
+      title="Total pagado"
+      [amount]="formatCurrency(totalPaid())"
       currency=""
-      subtitle="4 requieren tu aprobación"
-      iconClass="lucide-clock"
-      iconColor="#FFB800"
-      iconBg="rgba(255, 184, 0, 0.1)">
+      iconClass="lucide-circle-dollar-sign"
+      iconColor="#16A36A" iconBg="rgba(22, 163, 106, 0.1)">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Pendiente por pagar"
+      [amount]="formatCurrency(totalPending())"
+      currency=""
+      iconClass="lucide-banknote"
+      iconColor="#E6A117" iconBg="rgba(230, 161, 23, 0.1)">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Órdenes activas"
+      [amount]="activeOrders()"
+      currency=""
+      subtitle="En borrador, revisión o exportadas"
+      iconClass="lucide-list-checks"
+      iconColor="#5140B8" iconBg="rgba(81, 64, 184, 0.1)">
+    </app-stat-card>
+
+    <app-stat-card
+      title="Deuda a proveedores"
+      [amount]="formatCurrency(vendorDebt())"
+      currency=""
+      iconClass="lucide-building-2"
+      iconColor="#D92D45" iconBg="rgba(217, 45, 69, 0.1)">
     </app-stat-card>
   </div>
 
-  <!-- Charts Row -->
   <div class="dashboard-charts">
-    <div class="chart-card chart-card--main">
-      <h3 class="chart-card__title">Evolución de Dispersiones</h3>
-      <div echarts [options]="lineChartOption" class="chart-container"></div>
+    <div class="chart-card">
+      <h3 class="chart-card__title">Estado de órdenes</h3>
+      <div echarts [options]="statusChart" class="chart-container"></div>
     </div>
-    <div class="chart-card chart-card--side">
-      <h3 class="chart-card__title">Estado de Operaciones</h3>
-      <div echarts [options]="donutChartOption" class="chart-container"></div>
+    <div class="chart-card">
+      <h3 class="chart-card__title">Gasto por categoría</h3>
+      <div echarts [options]="categoryChart" class="chart-container"></div>
     </div>
   </div>
 
-  <!-- Recent Table -->
+  <div class="quick-actions">
+    <app-button variant="primary" (clicked)="goTo('/planillas')">Nueva planilla</app-button>
+    <app-button variant="secondary" (clicked)="goTo('/dispersiones')">Nueva dispersión</app-button>
+    <app-button variant="outline" (clicked)="goTo('/empleados')">Nuevo empleado</app-button>
+    <app-button variant="outline" (clicked)="goTo('/proveedores')">Nuevo proveedor</app-button>
+  </div>
+
   <div class="dashboard-recent">
-    <h3 class="dashboard-recent__title">Últimos Movimientos</h3>
+    <h3 class="dashboard-recent__title">Últimas órdenes</h3>
     <app-data-table
-      [columns]="tableColumns"
-      [data]="tableData"
-      [isLoading]="isTableLoading">
+      [columns]="recentColumns"
+      [data]="recent()"
+      [isLoading]="isLoading"
+      [clickableRows]="true"
+      (rowClicked)="openBatch($event)"
+      emptyTitle="Sin órdenes todavía"
+      emptyMessage="Crea tu primera planilla o dispersión para verla aquí.">
+      <ng-template appDataTableCell="kind" let-row>{{ kindLabel(row.batchKind) }}</ng-template>
     </app-data-table>
   </div>
 </div>

@@ -1,0 +1,73 @@
+// Shared layout helpers for feature forms (drawers / wizards).
+
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.form-section-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-top: var(--space-2);
+}
+
+// Generic page container used by feature list/detail pages.
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.page__toolbar {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+// Inline text actions inside data-table rows.
+.row-actions {
+  display: inline-flex;
+  gap: var(--space-1);
+  justify-content: flex-end;
+
+  &__btn {
+    background: transparent;
+    border: none;
+    color: var(--wiego-indigo);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    font-family: var(--font-family-base);
+    cursor: pointer;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    transition: background var(--duration-fast);
+
+    &:hover { background: var(--color-surface-secondary); }
+    &--danger { color: var(--color-error); }
+  }
+}
+

@@ -32,10 +32,10 @@
   tbody {
     tr {
       transition: background var(--duration-fast);
-      cursor: pointer;
 
-      &:hover {
-        background: var(--color-surface-hover);
+      &.data-table__row--clickable {
+        cursor: pointer;
+        &:hover { background: var(--color-surface-hover); }
       }
 
       &:last-child td {

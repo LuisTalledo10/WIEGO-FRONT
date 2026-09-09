@@ -1,0 +1,22 @@
+<div class="input-group" [class.input-group--error]="isInvalid" [class.input-group--disabled]="isDisabled">
+  <label *ngIf="label" class="input-label">{{ label }}</label>
+
+  <div class="select-wrapper">
+    <select
+      class="input-field select-field"
+      [value]="value ?? ''"
+      [disabled]="isDisabled"
+      (change)="handleChange($event)"
+      (blur)="onTouched()"
+    >
+      <option value="" disabled>{{ placeholder }}</option>
+      <option *ngFor="let opt of options" [value]="opt.value">{{ opt.label }}</option>
+    </select>
+    <span class="select-caret">▾</span>
+  </div>
+
+  <div class="input-feedback">
+    <span *ngIf="isInvalid" class="input-error">{{ errorMessage }}</span>
+    <span *ngIf="hint && !isInvalid" class="input-hint">{{ hint }}</span>
+  </div>
+</div>

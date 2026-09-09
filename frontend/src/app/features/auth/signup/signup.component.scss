@@ -1,0 +1,42 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-header {
+  margin-bottom: var(--space-8);
+  text-align: center;
+}
+
+.login-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.login-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.login-footer {
+  margin-top: var(--space-5);
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+
+  &__link {
+    color: var(--wiego-indigo);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover { text-decoration: underline; }
+  }
+}

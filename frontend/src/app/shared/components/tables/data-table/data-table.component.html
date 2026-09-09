@@ -2,20 +2,35 @@
   <table class="data-table">
     <thead>
       <tr>
-        <th *ngFor="let col of columns" 
+        <th *ngFor="let col of columns"
             [style.text-align]="col.align || 'left'"
             [style.width]="col.width || 'auto'">
           {{ col.header }}
         </th>
       </tr>
     </thead>
-    
+
     <tbody *ngIf="!isLoading && data.length > 0">
-      <tr *ngFor="let row of data" (click)="rowClicked.emit(row)">
+      <tr *ngFor="let row of data"
+          [class.data-table__row--clickable]="clickableRows"
+          (click)="clickableRows && rowClicked.emit(row)">
         <td *ngFor="let col of columns" [style.text-align]="col.align || 'left'">
           <ng-container [ngSwitch]="col.type">
             <span *ngSwitchCase="'currency'">{{ row[col.key] | number:'1.2-2' }}</span>
             <span *ngSwitchCase="'date'">{{ row[col.key] | date:'dd/MM/yyyy' }}</span>
+
+            <app-status-badge
+              *ngSwitchCase="'badge'"
+              [status]="col.badge ? col.badge(row).status : 'default'"
+              [text]="col.badge ? col.badge(row).text : row[col.key]">
+            </app-status-badge>
+
+            <ng-container *ngSwitchCase="'custom'">
+              <ng-container
+                *ngTemplateOutlet="templateFor(col.key); context: { $implicit: row }">
+              </ng-container>
+            </ng-container>
+
             <span *ngSwitchDefault>{{ row[col.key] }}</span>
           </ng-container>
         </td>
@@ -32,8 +47,8 @@
   </table>
 
   <div *ngIf="!isLoading && data.length === 0" class="data-table-empty">
-    <app-empty-state 
-      [title]="emptyTitle" 
+    <app-empty-state
+      [title]="emptyTitle"
       [description]="emptyMessage"
       iconClass="lucide-file-search">
     </app-empty-state>

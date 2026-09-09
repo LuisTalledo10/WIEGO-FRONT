@@ -1,44 +1,25 @@
-<div class="payroll-page">
-  <header class="page-header">
-    <div>
-      <h1 class="page-title">Gestión de Nómina</h1>
-      <p class="page-subtitle">Administra los pagos de tus empleados y mantén el control</p>
-    </div>
-    
-    <app-button variant="primary" (clicked)="openWizard()">
-      <i class="lucide-plus" style="margin-right: 8px;"></i>
-      Cargar Nómina
-    </app-button>
-  </header>
+<div class="page">
+  <app-page-header title="Planillas" subtitle="Órdenes de pago a empleados. Crea, envía a aprobación y exporta al banco.">
+    <app-button variant="primary" (clicked)="isWizardOpen = true">Nueva planilla</app-button>
+  </app-page-header>
 
-  <div class="tabs-container">
-    <button 
-      class="tab-item" 
-      [class.tab-item--active]="activeTab === 'history'"
-      (click)="setTab('history')">
-      Historial de Nóminas
-    </button>
-    <button 
-      class="tab-item" 
-      [class.tab-item--active]="activeTab === 'employees'"
-      (click)="setTab('employees')">
-      Directorio de Empleados
-    </button>
-  </div>
-
-  <div class="page-content">
-    <app-data-table
-      [columns]="activeTab === 'history' ? payrollColumns : employeeColumns"
-      [data]="tableData"
-      [isLoading]="isTableLoading"
-      emptyTitle="No hay registros"
-      emptyMessage="Aún no existen registros en esta sección.">
-    </app-data-table>
-  </div>
+  <app-data-table
+    [columns]="columns"
+    [data]="batches"
+    [isLoading]="isLoading"
+    [clickableRows]="true"
+    (rowClicked)="open($event)"
+    emptyTitle="Aún no tienes planillas"
+    emptyMessage="Crea tu primera planilla para pagar a tus empleados."
+  >
+    <ng-template appDataTableCell="period" let-row>
+      {{ formatPeriod(row.period) }}
+    </ng-template>
+  </app-data-table>
 </div>
 
-<app-payroll-wizard 
+<app-payroll-wizard
   *ngIf="isWizardOpen"
-  (closed)="closeWizard()"
-  (completed)="onWizardCompleted()">
-</app-payroll-wizard>
+  (closed)="isWizardOpen = false"
+  (completed)="onWizardDone($event)"
+></app-payroll-wizard>

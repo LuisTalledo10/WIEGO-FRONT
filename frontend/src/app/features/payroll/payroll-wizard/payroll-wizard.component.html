@@ -1,32 +1,79 @@
-<app-modal 
-  [title]="modalTitle"
-  [size]="modalSize"
-  (close)="closed.emit()">
-  
-  <div class="wizard-stepper">
-    <div class="stepper-dot" [class.stepper-dot--active]="currentStep === 'upload'">1</div>
-    <div class="stepper-line"></div>
-    <div class="stepper-dot" [class.stepper-dot--active]="currentStep === 'validate'">2</div>
-    <div class="stepper-line"></div>
-    <div class="stepper-dot" [class.stepper-dot--active]="currentStep === 'schedule'">3</div>
+<app-modal [title]="modalTitle" size="lg" (close)="closed.emit()">
+  <!-- STEP 1 -->
+  <form *ngIf="step === 1" [formGroup]="detailsForm" class="form-grid">
+    <app-input formControlName="name" label="Nombre de la planilla" placeholder="Planilla quincena 1"></app-input>
+    <app-input formControlName="period" label="Periodo (AAAA-MM)" placeholder="2026-09" hint="Ej. 2026-09"></app-input>
+    <div class="form-actions">
+      <app-button variant="outline" type="button" (clicked)="closed.emit()">Cancelar</app-button>
+      <app-button variant="primary" type="button" [loading]="isWorking" (clicked)="next()">Continuar</app-button>
+    </div>
+  </form>
+
+  <!-- STEP 2 -->
+  <div *ngIf="step === 2" class="wizard-step">
+    <p class="wizard-hint">Marca los empleados a pagar e ingresa el monto de cada uno.</p>
+
+    <div *ngIf="loadingEmployees" class="wizard-loading">
+      <app-skeleton type="text" height="44px" *ngFor="let i of [1,2,3,4]"></app-skeleton>
+    </div>
+
+    <div *ngIf="!loadingEmployees && !lines.length" class="wizard-empty">
+      No hay empleados activos. Crea empleados en el Directorio primero.
+    </div>
+
+    <div class="emp-list" *ngIf="!loadingEmployees && lines.length">
+      <div class="emp-row" *ngFor="let l of lines" [class.emp-row--on]="l.selected">
+        <label class="emp-row__check">
+          <input type="checkbox" [(ngModel)]="l.selected" />
+        </label>
+        <div class="emp-row__info">
+          <span class="emp-row__name">{{ l.employee.fullName }}</span>
+          <span class="emp-row__meta">{{ bankLabel(l.employee.bankId) }} · {{ l.employee.documentNumber }}</span>
+        </div>
+        <input
+          class="emp-row__amount"
+          type="number"
+          placeholder="0.00"
+          [(ngModel)]="l.amount"
+          [disabled]="!l.selected"
+        />
+        <input
+          class="emp-row__concept"
+          type="text"
+          placeholder="Concepto"
+          [(ngModel)]="l.concept"
+          [disabled]="!l.selected"
+        />
+      </div>
+    </div>
+
+    <div class="wizard-total">
+      <span>{{ selectedLines.length }} seleccionados</span>
+      <span class="wizard-total__amount">{{ formatCurrency(total) }}</span>
+    </div>
+
+    <div class="form-actions">
+      <app-button variant="outline" type="button" (clicked)="back()">Atrás</app-button>
+      <app-button variant="primary" type="button" [loading]="isWorking" (clicked)="next()">Continuar</app-button>
+    </div>
   </div>
 
-  <app-step-upload-employees 
-    *ngIf="currentStep === 'upload'" 
-    (fileSelected)="handleFileSelected($event)">
-  </app-step-upload-employees>
-
-  <app-step-validate 
-    *ngIf="currentStep === 'validate'"
-    [file]="selectedFile"
-    (back)="handleValidateBack()"
-    (next)="handleValidateNext()">
-  </app-step-validate>
-
-  <app-step-schedule 
-    *ngIf="currentStep === 'schedule'"
-    (back)="handleScheduleBack()"
-    (confirm)="handleScheduleSuccess()">
-  </app-step-schedule>
-
+  <!-- STEP 3 -->
+  <div *ngIf="step === 3" class="wizard-step">
+    <p class="wizard-hint">Revisa la planilla antes de enviarla a aprobación.</p>
+    <ul class="review-list">
+      <li *ngFor="let l of selectedLines" class="review-list__item">
+        <span>{{ l.employee.fullName }}</span>
+        <span class="review-list__amount">{{ formatCurrency(l.amount || 0, l.employee.currencyId) }}</span>
+      </li>
+    </ul>
+    <div class="wizard-total">
+      <span>Total</span>
+      <span class="wizard-total__amount">{{ formatCurrency(total) }}</span>
+    </div>
+    <div class="form-actions">
+      <app-button variant="outline" type="button" (clicked)="back()">Atrás</app-button>
+      <app-button variant="primary" type="button" [loading]="isWorking" (clicked)="next()">Enviar a aprobación</app-button>
+    </div>
+  </div>
 </app-modal>

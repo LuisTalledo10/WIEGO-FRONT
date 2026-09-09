@@ -1,4 +1,7 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:5000/api' // To be replaced by local dev URL
+  // Backend Wiego (.NET). Routes are root-absolute (no /api prefix).
+  //   dotnet run --project Wiego.Api  -> http://localhost:5290   (default here)
+  //   docker compose up               -> http://localhost:8080
+  apiUrl: 'http://localhost:5290'
 };

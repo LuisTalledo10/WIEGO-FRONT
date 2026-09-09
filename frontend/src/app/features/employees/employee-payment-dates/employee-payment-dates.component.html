@@ -1,0 +1,36 @@
+<app-drawer [title]="'Fechas de pago — ' + employee.fullName" (close)="closed.emit()">
+  <div class="form-grid">
+    <p class="dates-hint">
+      Registra las fechas en que se le paga a este empleado. Se usan para agrupar
+      empleados al crear una planilla.
+    </p>
+
+    <div class="date-add">
+      <input type="date" class="input-field date-add__input" [(ngModel)]="newDate" />
+      <app-button variant="outline" size="md" (clicked)="add()" [disabled]="!newDate">Agregar</app-button>
+    </div>
+
+    <ul class="date-list" *ngIf="dates.length; else emptyTpl">
+      <li *ngFor="let d of dates" class="date-list__item">
+        <lucide-icon name="calendar-days" [size]="16"></lucide-icon>
+        <span>{{ d | date:'dd/MM/yyyy' }}</span>
+        <button class="date-list__remove" (click)="remove(d)" aria-label="Quitar fecha">
+          <lucide-icon name="trash-2" [size]="15"></lucide-icon>
+        </button>
+      </li>
+    </ul>
+
+    <ng-template #emptyTpl>
+      <app-empty-state
+        title="Sin fechas registradas"
+        description="Agrega al menos una fecha de pago."
+        iconClass="lucide-calendar">
+      </app-empty-state>
+    </ng-template>
+
+    <div class="form-actions">
+      <app-button variant="outline" (clicked)="closed.emit()" [disabled]="isSaving">Cancelar</app-button>
+      <app-button variant="primary" (clicked)="save()" [loading]="isSaving">Guardar</app-button>
+    </div>
+  </div>
+</app-drawer>

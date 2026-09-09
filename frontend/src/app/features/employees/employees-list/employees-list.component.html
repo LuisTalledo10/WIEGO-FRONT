@@ -1,0 +1,70 @@
+<div class="page">
+  <app-page-header title="Empleados" subtitle="Personas a las que tu empresa paga por planilla.">
+    <app-button variant="primary" (clicked)="openNew()">Nuevo empleado</app-button>
+  </app-page-header>
+
+  <div class="page__toolbar">
+    <div style="width: 260px;">
+      <app-select
+        [(ngModel)]="bankFilter"
+        [ngModelOptions]="{ standalone: true }"
+        [options]="bankFilterOptions"
+        (ngModelChange)="load()"
+      ></app-select>
+    </div>
+  </div>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="employees"
+    [isLoading]="isLoading"
+    emptyTitle="Aún no tienes empleados"
+    emptyMessage="Registra a tu primer empleado para incluirlo en una planilla."
+  >
+    <ng-template appDataTableCell="account" let-row>
+      {{ maskAccount(row.accountNumber) }}
+    </ng-template>
+
+    <ng-template appDataTableCell="payDates" let-row>
+      {{ row.paymentDates?.length || 0 }}
+    </ng-template>
+
+    <ng-template appDataTableCell="actions" let-row>
+      <div class="row-actions">
+        <button class="row-actions__btn" (click)="openEdit(row)" title="Editar">Editar</button>
+        <button class="row-actions__btn" (click)="datesEmployee = row" title="Fechas de pago">Fechas</button>
+        <button
+          class="row-actions__btn row-actions__btn--danger"
+          *ngIf="row.isActive"
+          (click)="employeeToDeactivate = row"
+          title="Desactivar"
+        >Desactivar</button>
+      </div>
+    </ng-template>
+  </app-data-table>
+</div>
+
+<app-employee-form
+  *ngIf="formEmployee !== undefined"
+  [employee]="formEmployee"
+  (closed)="formEmployee = undefined"
+  (saved)="onFormSaved()"
+></app-employee-form>
+
+<app-employee-payment-dates
+  *ngIf="datesEmployee"
+  [employee]="datesEmployee"
+  (closed)="datesEmployee = null"
+  (saved)="onDatesSaved()"
+></app-employee-payment-dates>
+
+<app-confirm-dialog
+  *ngIf="employeeToDeactivate"
+  title="Desactivar empleado"
+  [message]="'¿Desactivar a ' + employeeToDeactivate.fullName + '? No podrá incluirse en nuevas planillas.'"
+  confirmText="Desactivar"
+  confirmVariant="danger"
+  [loading]="isDeactivating"
+  (confirm)="confirmDeactivate()"
+  (cancel)="employeeToDeactivate = null"
+></app-confirm-dialog>

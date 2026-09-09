@@ -1,77 +1,66 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataTableComponent, ColumnDef } from '../../../shared/components/tables/data-table/data-table.component';
-import { ButtonComponent } from '../../../shared/components/buttons/button/button.component';
+import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
+import { ButtonComponent } from '@shared/components/buttons/button/button.component';
+import { DataTableComponent, ColumnDef } from '@shared/components/tables/data-table/data-table.component';
+import { DataTableCellDirective } from '@shared/components/tables/data-table/data-table-cell.directive';
+import { PaymentBatchesService } from '@core/data/payment-batches.service';
+import { PaymentBatchSummary } from '@core/models/payment-batch.models';
+import { BATCH_STATUS_BADGE, BATCH_STATUS_LABELS } from '@core/models/enums';
+import { formatPeriod } from '@core/utils/format.util';
 import { PayrollWizardComponent } from '../payroll-wizard/payroll-wizard.component';
 
 @Component({
   selector: 'app-payroll-list',
   standalone: true,
-  imports: [CommonModule, DataTableComponent, ButtonComponent, PayrollWizardComponent],
-  templateUrl: './payroll-list.component.html',
-  styleUrls: ['./payroll-list.component.scss']
+  imports: [
+    CommonModule, PageHeaderComponent, ButtonComponent, DataTableComponent,
+    DataTableCellDirective, PayrollWizardComponent
+  ],
+  templateUrl: './payroll-list.component.html'
 })
 export class PayrollListComponent implements OnInit {
+  private readonly service = inject(PaymentBatchesService);
+  private readonly router = inject(Router);
+
+  batches: PaymentBatchSummary[] = [];
+  isLoading = true;
   isWizardOpen = false;
-  isTableLoading = true;
-  tableData: any[] = [];
-  activeTab: 'history' | 'employees' = 'history';
 
-  payrollColumns: ColumnDef[] = [
-    { key: 'period', header: 'Periodo' },
-    { key: 'date', header: 'Fecha de Pago', type: 'date' },
-    { key: 'employees', header: 'Empleados', align: 'center' },
-    { key: 'amount', header: 'Monto Total', type: 'currency', align: 'right' },
-    { key: 'status', header: 'Estado' }
+  columns: ColumnDef[] = [
+    { key: 'name', header: 'Planilla' },
+    { key: 'period', header: 'Periodo', type: 'custom' },
+    {
+      key: 'status', header: 'Estado', type: 'badge',
+      badge: (row: PaymentBatchSummary) => ({
+        status: BATCH_STATUS_BADGE[row.status], text: BATCH_STATUS_LABELS[row.status]
+      })
+    },
+    { key: 'createdAt', header: 'Creada', type: 'date' }
   ];
 
-  employeeColumns: ColumnDef[] = [
-    { key: 'id', header: 'ID Empleado' },
-    { key: 'name', header: 'Nombre' },
-    { key: 'department', header: 'Departamento' },
-    { key: 'status', header: 'Estado' }
-  ];
+  readonly formatPeriod = formatPeriod;
 
-  ngOnInit() {
-    this.loadData();
+  ngOnInit(): void {
+    this.load();
   }
 
-  setTab(tab: 'history' | 'employees') {
-    this.activeTab = tab;
-    this.isTableLoading = true;
-    this.tableData = [];
-    this.loadData();
+  load(): void {
+    this.isLoading = true;
+    this.service
+      .list('Payroll')
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({ next: rows => (this.batches = rows) });
   }
 
-  loadData() {
-    setTimeout(() => {
-      if (this.activeTab === 'history') {
-        this.tableData = [
-          { period: 'Quincena 1 - Feb', date: new Date(), employees: 42, amount: 450000.00, status: 'Pagado' },
-          { period: 'Quincena 2 - Ene', date: new Date(Date.now() - 86400000 * 15), employees: 42, amount: 450000.00, status: 'Pagado' }
-        ];
-      } else {
-        this.tableData = [
-          { id: 'EMP-001', name: 'Ana García', department: 'Ventas', status: 'Activo' },
-          { id: 'EMP-002', name: 'Luis Martínez', department: 'Tecnología', status: 'Activo' },
-          { id: 'EMP-003', name: 'Carlos López', department: 'Recursos Humanos', status: 'Inactivo' }
-        ];
-      }
-      this.isTableLoading = false;
-    }, 1000);
+  open(row: PaymentBatchSummary): void {
+    this.router.navigate(['/planillas', row.id]);
   }
 
-  openWizard() {
-    this.isWizardOpen = true;
-  }
-
-  closeWizard() {
+  onWizardDone(batchId: string): void {
     this.isWizardOpen = false;
-  }
-
-  onWizardCompleted() {
-    this.closeWizard();
-    this.isTableLoading = true;
-    this.loadData();
+    this.router.navigate(['/planillas', batchId]);
   }
 }

@@ -1,0 +1,29 @@
+<div class="login-container">
+  <div class="login-header">
+    <h1 class="login-title">Crea tu empresa</h1>
+    <p class="login-subtitle">Registra tu organización y su primer administrador</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form">
+    <app-input formControlName="companyName" label="Nombre de la empresa" placeholder="Mi Empresa S.A.C."></app-input>
+    <app-input formControlName="userName" label="Tu nombre" placeholder="Nombre y apellido"></app-input>
+    <app-input formControlName="email" label="Correo electrónico" type="email" placeholder="tu@empresa.com"></app-input>
+    <app-input formControlName="password" label="Contraseña" type="password" placeholder="Mínimo 6 caracteres"></app-input>
+    <app-input
+      formControlName="confirmPassword"
+      label="Confirmar contraseña"
+      type="password"
+      placeholder="Repite la contraseña"
+      [hint]="passwordMismatch ? 'Las contraseñas no coinciden' : ''"
+    ></app-input>
+
+    <app-button type="submit" variant="primary" size="lg" [fullWidth]="true" [loading]="isLoading">
+      Crear cuenta
+    </app-button>
+
+    <p class="login-footer">
+      ¿Ya tienes una cuenta?
+      <a routerLink="/login" class="login-footer__link">Inicia sesión</a>
+    </p>
+  </form>
+</div>

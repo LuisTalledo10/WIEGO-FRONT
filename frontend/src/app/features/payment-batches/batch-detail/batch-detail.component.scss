@@ -1,0 +1,99 @@
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  width: fit-content;
+
+  &:hover { color: var(--wiego-indigo); }
+}
+
+.detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+
+  &__top {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  &__title {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+  &__meta {
+    margin-top: var(--space-1);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+  }
+  &__actions {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+}
+
+.detail-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+}
+
+.detail-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+
+  &__label { font-size: var(--font-size-sm); color: var(--color-text-secondary); }
+  &__value { font-size: var(--font-size-xl); font-weight: 700; color: var(--color-text-primary); }
+}
+
+.detail-trail {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+
+  &__rejected { color: var(--color-error); }
+}
+
+.reject-message {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+.reject-textarea {
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  resize: vertical;
+  outline: none;
+
+  &:focus {
+    border-color: var(--wiego-indigo);
+    box-shadow: 0 0 0 3px rgba(81, 64, 184, 0.12);
+  }
+}
+
+.reject-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}

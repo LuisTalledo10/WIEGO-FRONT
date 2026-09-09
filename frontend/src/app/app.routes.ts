@@ -15,73 +15,62 @@ export const routes: Routes = [
         loadComponent: () => import('./features/auth/login/login.component').then(m => m.LoginComponent)
       },
       {
-        path: 'forgot-password',
-        loadComponent: () => import('./features/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent)
+        path: 'signup',
+        loadComponent: () => import('./features/auth/signup/signup.component').then(m => m.SignupComponent)
       },
       {
-        path: '',
-        redirectTo: 'login',
-        pathMatch: 'full'
-      }
+        path: 'forgot-password',
+        loadComponent: () =>
+          import('./features/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent)
+      },
+      { path: '', redirectTo: 'login', pathMatch: 'full' }
     ]
   },
   {
-    path: 'dashboard',
+    path: '',
     component: DashboardLayoutComponent,
     canActivate: [authGuard],
     children: [
       {
-        path: '',
+        path: 'dashboard',
         loadComponent: () => import('./features/dashboard/dashboard/dashboard.component').then(m => m.DashboardComponent)
-      }
-    ]
-  },
-  {
-    path: 'dispersions',
-    component: DashboardLayoutComponent,
-    canActivate: [authGuard],
-    children: [
+      },
       {
-        path: '',
-        loadComponent: () => import('./features/dispersions/dispersions-list/dispersions-list.component').then(m => m.DispersionsListComponent)
-      }
-    ]
-  },
-  {
-    path: 'payroll',
-    component: DashboardLayoutComponent,
-    canActivate: [authGuard],
-    children: [
+        path: 'planillas',
+        loadComponent: () =>
+          import('./features/payroll/payroll-list/payroll-list.component').then(m => m.PayrollListComponent)
+      },
       {
-        path: '',
-        loadComponent: () => import('./features/payroll/payroll-list/payroll-list.component').then(m => m.PayrollListComponent)
-      }
-    ]
-  },
-  {
-    path: 'beneficiaries',
-    component: DashboardLayoutComponent,
-    canActivate: [authGuard],
-    children: [
+        path: 'planillas/:id',
+        loadComponent: () =>
+          import('./features/payment-batches/batch-detail/batch-detail.component').then(m => m.BatchDetailComponent)
+      },
       {
-        path: '',
-        loadComponent: () => import('./features/beneficiaries/beneficiaries-list/beneficiaries-list.component').then(m => m.BeneficiariesListComponent)
-      }
-    ]
-  },
-  {
-    path: 'operations',
-    component: DashboardLayoutComponent,
-    canActivate: [authGuard],
-    children: [
+        path: 'dispersiones',
+        loadComponent: () =>
+          import('./features/dispersions/dispersions-list/dispersions-list.component').then(m => m.DispersionsListComponent)
+      },
       {
-        path: '',
-        loadComponent: () => import('./features/operations/operations/operations.component').then(m => m.OperationsComponent)
+        path: 'dispersiones/:id',
+        loadComponent: () =>
+          import('./features/payment-batches/batch-detail/batch-detail.component').then(m => m.BatchDetailComponent)
+      },
+      {
+        path: 'operaciones',
+        loadComponent: () =>
+          import('./features/operations/operations/operations.component').then(m => m.OperationsComponent)
+      },
+      {
+        path: 'empleados',
+        loadComponent: () =>
+          import('./features/employees/employees-list/employees-list.component').then(m => m.EmployeesListComponent)
+      },
+      {
+        path: 'proveedores',
+        loadComponent: () =>
+          import('./features/vendors/vendors-list/vendors-list.component').then(m => m.VendorsListComponent)
       }
     ]
   },
-  {
-    path: '**',
-    redirectTo: 'login'
-  }
+  { path: '**', redirectTo: 'login' }
 ];

@@ -1,0 +1,61 @@
+<app-drawer [title]="'Cuentas por pagar — ' + vendor.vendorName" (close)="closed.emit()">
+  <div class="form-grid">
+    <div class="payables-summary">
+      <span class="payables-summary__label">Saldo pendiente</span>
+      <span class="payables-summary__value">{{ formatCurrency(vendor.outstandingBalance) }}</span>
+    </div>
+
+    <div class="payables-head">
+      <span class="form-section-title">Documentos</span>
+      <app-button variant="outline" size="sm" (clicked)="showForm = !showForm">
+        {{ showForm ? 'Cerrar' : 'Nueva cuenta por pagar' }}
+      </app-button>
+    </div>
+
+    <form *ngIf="showForm" [formGroup]="form" (ngSubmit)="submit()" class="form-grid payables-form">
+      <app-input formControlName="documentNumber" label="Nº de documento" placeholder="F001-000123"></app-input>
+      <div class="form-row">
+        <app-input formControlName="issueDate" label="Emisión" type="date"></app-input>
+        <app-input formControlName="dueDate" label="Vencimiento" type="date"></app-input>
+      </div>
+      <div class="form-row">
+        <app-input formControlName="totalAmount" label="Monto total" type="number" placeholder="0.00"></app-input>
+        <app-select formControlName="currencyId" label="Moneda" [options]="currencyOptions"></app-select>
+      </div>
+      <div class="form-actions">
+        <app-button variant="primary" type="submit" [loading]="isSaving">Registrar</app-button>
+      </div>
+    </form>
+
+    <div *ngIf="isLoading" class="payables-loading">
+      <app-skeleton type="text" height="52px" *ngFor="let i of [1,2,3]"></app-skeleton>
+    </div>
+
+    <ul class="payables-list" *ngIf="!isLoading && payables.length">
+      <li *ngFor="let p of payables" class="payables-list__item">
+        <div class="payables-list__main">
+          <span class="payables-list__doc">{{ p.documentNumber }}</span>
+          <span class="payables-list__meta">Vence {{ p.dueDate | date:'dd/MM/yyyy' }}</span>
+        </div>
+        <div class="payables-list__amounts">
+          <span class="payables-list__balance">{{ formatCurrency(p.balance, p.currencyId) }}</span>
+          <span class="payables-list__total">de {{ formatCurrency(p.totalAmount, p.currencyId) }}</span>
+        </div>
+        <app-status-badge [status]="statusBadge[p.status]" [text]="statusLabel[p.status]"></app-status-badge>
+        <button
+          class="payables-list__cancel"
+          *ngIf="p.status === 'Open'"
+          (click)="cancelPayable(p)"
+          title="Cancelar"
+        >Cancelar</button>
+      </li>
+    </ul>
+
+    <app-empty-state
+      *ngIf="!isLoading && !payables.length"
+      title="Sin cuentas por pagar"
+      description="Registra una factura para poder pagarla en una dispersión."
+      iconClass="lucide-file-text">
+    </app-empty-state>
+  </div>
+</app-drawer>
